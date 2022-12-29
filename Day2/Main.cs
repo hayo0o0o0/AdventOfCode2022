@@ -93,10 +93,10 @@ public class Main
         {
         }
 
-        public string Opponent { get; set; }
-        public string Own { get; set; }
+        public string? Opponent { get; set; }
+        public string? Own { get; set; }
 
-        public string MatchDetermination { get; set; }
+        public string? MatchDetermination { get; set; }
 
         public void DetermineOwn()
         {
