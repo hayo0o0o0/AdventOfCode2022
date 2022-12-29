@@ -2,12 +2,6 @@
 
 public class Main
 {
-    private static Dictionary<string, int> Scores = new()
-    {
-        { OwnRock, 1 }, // Rock
-        { OwnPaper, 2 }, // Paper
-        { OwnScissors, 3 }  // Scissors
-    };
     private const string OpponentRock = "A";
     private const string OpponentPaper = "B";
     private const string OpponentScissors = "C";
@@ -18,45 +12,12 @@ public class Main
     private const string MatchDraw = "Y";
     private const string MatchWin = "Z";
 
-    private class Round
+    private static readonly Dictionary<string, int> Scores = new()
     {
-        public string Opponent { get; set; }
-        public string Own { get; set; }
-        
-        public string MatchDetermination { get; set; }
-
-        public Round(string opponent, string own)
-        {
-            Opponent = opponent;
-            Own = own;
-        }
-
-        public Round()
-        {
-        }
-
-        public void DetermineOwn()
-        {
-            switch (this)
-            {
-                case {MatchDetermination:MatchLose, Opponent:OpponentPaper}:
-                case {MatchDetermination:MatchDraw, Opponent:OpponentRock}:
-                case {MatchDetermination:MatchWin, Opponent:OpponentScissors}:
-                    Own = OwnRock;
-                    break;
-                case {MatchDetermination:MatchLose, Opponent:OpponentScissors}:
-                case {MatchDetermination:MatchDraw, Opponent:OpponentPaper}:
-                case {MatchDetermination:MatchWin, Opponent:OpponentRock}:
-                    Own = OwnPaper;
-                    break;
-                case {MatchDetermination:MatchLose, Opponent:OpponentRock}:
-                case {MatchDetermination:MatchDraw, Opponent:OpponentScissors}:
-                case {MatchDetermination:MatchWin, Opponent:OpponentPaper}:
-                    Own = OwnScissors;
-                    break;
-            }
-        }
-    }
+        { OwnRock, 1 }, // Rock
+        { OwnPaper, 2 }, // Paper
+        { OwnScissors, 3 } // Scissors
+    };
 
     public static void Part1()
     {
@@ -69,6 +30,7 @@ public class Main
             var roundPoints = CalculateRoundPoints(round);
             totalScore += roundPoints;
         }
+
         Console.WriteLine("Part 1: Total score: {0}", totalScore);
     }
 
@@ -88,6 +50,7 @@ public class Main
             var roundPoints = CalculateRoundPoints(round);
             totalScore += roundPoints;
         }
+
         Console.WriteLine("Part 2: Total score: {0}", totalScore);
     }
 
@@ -116,5 +79,45 @@ public class Main
     {
         var rounds = File.ReadAllLines("input.txt");
         return rounds;
+    }
+
+    private class Round
+    {
+        public Round(string opponent, string own)
+        {
+            Opponent = opponent;
+            Own = own;
+        }
+
+        public Round()
+        {
+        }
+
+        public string Opponent { get; set; }
+        public string Own { get; set; }
+
+        public string MatchDetermination { get; set; }
+
+        public void DetermineOwn()
+        {
+            switch (this)
+            {
+                case { MatchDetermination: MatchLose, Opponent: OpponentPaper }:
+                case { MatchDetermination: MatchDraw, Opponent: OpponentRock }:
+                case { MatchDetermination: MatchWin, Opponent: OpponentScissors }:
+                    Own = OwnRock;
+                    break;
+                case { MatchDetermination: MatchLose, Opponent: OpponentScissors }:
+                case { MatchDetermination: MatchDraw, Opponent: OpponentPaper }:
+                case { MatchDetermination: MatchWin, Opponent: OpponentRock }:
+                    Own = OwnPaper;
+                    break;
+                case { MatchDetermination: MatchLose, Opponent: OpponentRock }:
+                case { MatchDetermination: MatchDraw, Opponent: OpponentScissors }:
+                case { MatchDetermination: MatchWin, Opponent: OpponentPaper }:
+                    Own = OwnScissors;
+                    break;
+            }
+        }
     }
 }
