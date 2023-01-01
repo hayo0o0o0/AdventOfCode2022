@@ -12,7 +12,27 @@ public static class Main
 
         FillCrates(crateNumberPosition, fileData, crates);
 
-        ExecuteActions(crateNumberPosition, fileData, crates);
+        ExecuteActionsCrateMover9000(crateNumberPosition, fileData, crates);
+
+        var highest = crates.Max(x => x.Count);
+
+        var answer = string.Join("", crates.Select(x => x.Peek()));
+
+        var crateOutput = BuildCrateOutput(crates, highest);
+
+        Console.WriteLine(crateOutput);
+        Console.WriteLine("Highest crates: {0}", answer.Replace("[", "").Replace("]", ""));
+    }
+    
+    public static void Part2()
+    {
+        var fileData = File.ReadAllLines("input.txt");
+        var crateNumberPosition = Array.FindIndex(fileData, x => x.StartsWith(" 1"));
+        var crates = PrepareCrates(fileData, crateNumberPosition);
+
+        FillCrates(crateNumberPosition, fileData, crates);
+
+        ExecuteActionsCrateMover9001(crateNumberPosition, fileData, crates);
 
         var highest = crates.Max(x => x.Count);
 
@@ -58,9 +78,9 @@ public static class Main
         return sb.ToString();
     }
 
-    private static void ExecuteActions(int crateNumberPosition, string[] fileData, List<Stack<string>> crates)
+    private static void ExecuteActionsCrateMover9000(int crateNumberPosition, IReadOnlyList<string> fileData, IReadOnlyList<Stack<string>> crates)
     {
-        for (var i = crateNumberPosition + 1; i < fileData.Length; i++)
+        for (var i = crateNumberPosition + 1; i < fileData.Count; i++)
         {
             if (!string.IsNullOrWhiteSpace(fileData[i]))
             {
@@ -72,6 +92,30 @@ public static class Main
                     var itemToMove = crates[from - 1].Pop();
                     crates[to - 1].Push(itemToMove);
                 }
+            }
+        }
+    }
+    
+    private static void ExecuteActionsCrateMover9001(int crateNumberPosition, IReadOnlyList<string> fileData, IReadOnlyList<Stack<string>> crates)
+    {
+        for (var i = crateNumberPosition + 1; i < fileData.Count; i++)
+        {
+            if (!string.IsNullOrWhiteSpace(fileData[i]))
+            {
+                Console.WriteLine(fileData[i]);
+                var (quantity, from, to) = ParseAction(fileData, i);
+                var itemsToMove = new Stack<string>();
+                for (var j = 0; j < quantity; j++)
+                {
+                    var itemToMove = crates[from - 1].Pop();
+                    itemsToMove.Push(itemToMove);
+                }
+
+                while (itemsToMove.TryPop(out var itemToMove))
+                {
+                    crates[to - 1].Push(itemToMove);    
+                }
+                
             }
         }
     }
