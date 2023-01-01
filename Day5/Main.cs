@@ -17,7 +17,7 @@ public static class Main
         var highest = crates.Max(x => x.Count);
 
         var answer = string.Join("", crates.Select(x => x.Peek()));
-        
+
 
         var crateOutput = BuildCrateOutput(crates, highest);
 
@@ -76,19 +76,20 @@ public static class Main
         }
     }
 
-    private static (int quantity, int from, int to) ParseAction(string[] fileData, int i)
+    private static (int quantity, int from, int to) ParseAction(IReadOnlyList<string> fileData, int i)
     {
-        var action = fileData[i].Replace("move ", "");
-        var firstSpace = action.IndexOf(" ");
-        var quantity = int.Parse(action[..firstSpace]);
-        action = action.Replace(quantity + " from ", "");
-        var from = int.Parse(action[..1]);
-        action = action.Replace(from + " to ", "");
-        var to = int.Parse(action[..1]);
+        var action = fileData[i]
+            .Replace("move ", "")
+            .Replace("from ", "")
+            .Replace("to ", "");
+        var actionNumbers = action.Split(" ").Select(int.Parse).ToArray();
+        var quantity = actionNumbers[0];
+        var from = actionNumbers[1];
+        var to = actionNumbers[2];
         return (quantity, from, to);
     }
 
-    private static void FillCrates(int crateNumberPosition, string[] fileData, List<Stack<string>> crates)
+    private static void FillCrates(int crateNumberPosition, IReadOnlyList<string> fileData, IReadOnlyList<Stack<string>> crates)
     {
         for (var i = crateNumberPosition - 1; i >= 0; i--)
         {
@@ -104,7 +105,7 @@ public static class Main
         }
     }
 
-    private static List<Stack<string>> PrepareCrates(string[] fileData, int crateNumberPosition)
+    private static List<Stack<string>> PrepareCrates(IReadOnlyList<string> fileData, int crateNumberPosition)
     {
         var numberOfCrates = fileData[crateNumberPosition].Split(" ", StringSplitOptions.RemoveEmptyEntries)
             .Select(int.Parse);
